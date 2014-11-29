@@ -34,8 +34,6 @@ void write(void)
 	key_t key;
 	int id,size,flag;
 	unsigned i;
-	//I oczywiście zmienna za pośrednictwem,
-	//której będziemy się odwoływać do segmentu wspólnego
 	unsigned *array;
 	printf("GENERATOR [%u]\n",(unsigned)getpid());
 	key = ftok("/tmp", PROJECTID);
@@ -45,7 +43,7 @@ void write(void)
 	
 	if(id > 0)
 	{
-		printf("Utworzono segment wspólny [%u][0x%x]\n\t", id, key);
+		printf("Utworzono segment wspólny [%u][0x%x]\n", id, key);
 		array = (unsigned*)shmat(id, NULL, 0);
 		for(i = 0; i < n; i++)
 		{ 
@@ -103,5 +101,11 @@ void remove(void)
 	if(id > 0)
 	{
 		(void)shmctl(id, IPC_RMID, &buffer);
+		printf("Zwolniono pamięć współdzieloną [%u]\n", id);
+	}
+	else
+	{
+		perror("Błąd segmentacji\n");
+		exit(1);
 	}
 }
